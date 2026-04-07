@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Order Food</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+<h2 style="text-align:center;">Order Food</h2>
+
+<form action="{{ url_for('place_order') }}" method="POST" style="width:300px; margin:auto;">
+
+  <label>Item:</label>
+  <select name="item" required>
+    <option value="Burger">Burger</option>
+    <option value="Pizza">Pizza</option>
+    <option value="Fries">Fries</option>
+    <option value="Sandwich">Sandwich</option>
+  </select>
+
+  <label>Price:</label>
+  <select name="price">
+    <option value="500">500</option>
+    <option value="800">800</option>
+    <option value="300">300</option>
+    <option value="400">400</option>
+  </select>
+
+  <label>Restaurant:</label>
+  <select name="restaurant">
+    <option value="KFC">KFC</option>
+    <option value="McDonalds">McDonalds</option>
+    <option value="Dominos">Dominos</option>
+  </select>
+
+  <label>Quantity:</label>
+  <input type="number" name="quantity" value="1">
+
+  <br><br>
+  <button type="submit">Order Now</button>
+
+</form>
+
+</body>
+</html>
