@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About Us - Fasteat</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.svg') }}" type="image/svg+xml">
+</head>
+<body>
+
+<header class="header" data-header>
+  <div class="container">
+    <a href="{{ url_for('home') }}" class="logo">
+      <img src="{{ url_for('static', filename='images/logo.svg') }}" width="148" height="38" alt="Fasteat home">
+    </a>
+    <nav class="navbar" data-navbar>
+      <ul class="navbar-list">
+        <li class="navbar-item"><a href="{{ url_for('home') }}" class="navbar-link">Home</a></li>
+        <li class="navbar-item"><a href="{{ url_for('about') }}" class="navbar-link">About Us</a></li>
+        <li class="navbar-item"><a href="{{ url_for('restaurants') }}" class="navbar-link">Restaurants</a></li>
+        <li class="navbar-item"><a href="{{ url_for('contact') }}" class="navbar-link">Contact Us</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="section about" data-reveal>
+    <div class="container">
+      <h1 class="h1 section-title">About Us</h1>
+      <p class="section-text">
+        Welcome to Fasteat! We are committed to bringing the best restaurants directly to your home. 
+        Our mission is to make food delivery fast, easy, and delicious.
+      </p>
+      <p class="section-text">
+        We partner with local restaurants to offer a wide variety of cuisines. 
+        Your satisfaction is our priority, and we ensure timely delivery every time.
+      </p>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <p class="copyright">
+      &copy; 2022 Fasteat. All rights reserved.
+    </p>
+  </div>
+</footer>
+
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
