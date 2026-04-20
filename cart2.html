@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Your Cart</title>
+</head>
+
+<body>
+
+<h2 style="text-align:center;">Your Orders</h2>
+
+<table border="1" style="margin:auto;">
+  <tr>
+    <th>Item</th>
+    <th>Price</th>
+    <th>Restaurant</th>
+    <th>Quantity</th>
+    <th>Total</th>
+  </tr>
+
+  {% for order in orders %}
+  <tr>
+    <td>{{ order.item_name }}</td>
+    <td>{{ order.price }}</td>
+    <td>{{ order.restaurant }}</td>
+    <td>{{ order.quantity }}</td>
+    <td>{{ order.total_price }}</td>
+  </tr>
+  {% endfor %}
+
+</table>
+<!-- MAIN CONTENT -->
+<div class="main-content">
+
+<div class="cart-container">
+
+<h2 class="cart-title">🛒 Your Cart</h2>
+
+{% if orders %}
+
+<table class="cart-table">
+
+<thead>
+<tr>
+<th>Food</th>
+<th>Restaurant</th>
+<th>Qty</th>
+<th>Price</th>
+<th>Time</th>
+<th>Action</th>
+</tr>
+</thead>
+
+<tbody>
+
+{% set total = 0 %}
+
+{% for order in orders %}
+{% set total = total + (order.price * (order.quantity if order.quantity else 1)) %}
+
+<tr>
+<td>{{ order.food_name }}</td>
+<td>{{ order.restaurant }}</td>
+<td>{{ order.quantity if order.quantity else 1 }}</td>
+<td>Rs {{ order.price }}</td>
+<td>{{ order.created_at if order.created_at else "N/A" }}</td>
+<td>
+<a href="{{ url_for('delete_order', order_id=order.id) }}" class="remove-btn">Remove</a>
+</td>
+</tr>
+
+{% endfor %}
+
+</tbody>
+</table>
+
+<div class="total-box">
+Total: Rs {{ total }}
+</div>
+
+{% else %}
+
+<div class="empty">
+<h2>Your cart is empty 😢</h2>
+<a href="{{ url_for('order_page') }}" class="btn btn-primary">Order Now</a>
+</div>
+
+{% endif %}
+
+</div>
+</div>
+
+</body>
+</html>

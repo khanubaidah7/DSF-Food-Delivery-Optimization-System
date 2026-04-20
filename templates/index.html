@@ -50,63 +50,142 @@
 
 
 
-  <!-- 
-    - #HEADER
-  -->
-
   <header class="header" data-header>
-    <div class="container">
+  <div class="container" style="display:flex; align-items:center; width:100%;">
 
-      <a href="#" class="logo">
-        <img src="{{ url_for('static', filename='images/logo.svg') }}" width="148" height="38" alt="Fasteat home">
-      </a>
+    <!-- LOGO -->
+    <a href="#" class="logo">
+      <img src="{{ url_for('static', filename='images/logo.svg') }}" width="148" height="38">
+    </a>
 
-      <nav class="navbar" data-navbar>
-        <button class="nav-close-btn" aria-label="close menu" data-nav-toggler>
-          <ion-icon name="close-outline" aria-hidden="true"></ion-icon>
-        </button>
+    <!-- NAVBAR -->
+    <nav class="navbar" data-navbar style="flex:1;">
 
-        <a href="#" class="logo">
-          <img src="{{ url_for('static', filename='images/logo.svg') }}" width="148" height="38" alt="Fasteat home">
-        </a>
-
-        <ul class="navbar-list">
-
-          <li class="navbar-item">
-            <a href="#" class="navbar-link" data-nav-link>Home</a>
-          </li>
-
-          <li class="navbar-item">
-            <a href="about" class="navbar-link" data-nav-link>About Us</a>
-          </li>
-
-          <li class="navbar-item">
-            <a href="restaurants" class="navbar-link" data-nav-link>Restaurants</a>
-          </li>
-
-          <li class="navbar-item">
-            <a href="contact" class="navbar-link" data-nav-link>Contacts</a>
-          </li>
-
-        </ul>
-      </nav>
-
-      <div class="header-action">
-        <button class="cart-btn" aria-label="cart">
-          <ion-icon name="bag" aria-hidden="true"></ion-icon>
-        </button>
-
-        <a href="#" class="btn btn-primary has-after">Order Now</a>
-      </div>
-
-      <button class="nav-open-btn" aria-label="open menu" data-nav-toggler>
-        <ion-icon name="menu-outline" aria-hidden="true"></ion-icon>
+      <button class="nav-close-btn" data-nav-toggler>
+        <ion-icon name="close-outline"></ion-icon>
       </button>
 
-      <div class="overlay" data-overlay data-nav-toggler></div>
+      <ul class="navbar-list" style="display:flex; align-items:center; gap:25px; width:100%;">
 
+        <li class="navbar-item">
+          <a href="home" class="navbar-link">Home</a>
+        </li>
+
+        <li class="navbar-item">
+          <a href="about" class="navbar-link">About Us</a>
+        </li>
+
+        <li class="navbar-item">
+          <a href="{{ url_for('restaurants') }}" class="navbar-link">Restaurants</a>
+        </li>
+
+        <li class="navbar-item">
+          <a href="contact" class="navbar-link">Contacts</a>
+        </li>
+
+        <!-- BAG ICON -->
+        <li class="navbar-item" style="margin-left:10px;">
+          <a href="{{ url_for('cart') }}">
+            <button class="cart-btn" style="
+              background:#fff;
+              border:none;
+              width:40px;
+              height:40px;
+              border-radius:50%;
+              display:flex;
+              align-items:center;
+              justify-content:center;
+            ">
+              <ion-icon name="bag-outline" style="font-size:20px; color:var(--marigold);"></ion-icon>
+            </button>
+          </a>
+        </li>
+
+        <!-- PUSH SPACE -->
+        <li style="flex:1;"></li>
+
+        <!-- USER (RIGHT CORNER) -->
+        <li class="navbar-item" style="position:relative; display:flex; align-items:center;">
+
+          {% if session.get('user_name') %}
+
+          <div class="user-box" onclick="toggleDropdown()" style="display:flex; align-items:center; gap:10px; cursor:pointer;">
+
+            <!-- NAME -->
+            <span style="color:var(--marigold); font-weight:600;">
+              {{ session.get('user_name') }}
+            </span>
+
+            <!-- CIRCLE -->
+            <div style="
+              width:38px;
+              height:38px;
+              border-radius:50%;
+              background:var(--marigold);
+              color:#fff;
+              display:flex;
+              align-items:center;
+              justify-content:center;
+              font-weight:bold;
+            ">
+              {{ session.get('user_name')[0] }}
+            </div>
+
+          </div>
+
+          <!-- DROPDOWN -->
+          <div id="userDropdown" style="
+            display:none;
+            position:absolute;
+            right:0;
+            top:50px;
+            background:#fff;
+            border-radius:10px;
+            box-shadow:0 10px 25px rgba(0,0,0,0.15);
+            overflow:hidden;
+            min-width:140px;
+            z-index:999;
+          ">
+            <a href="{{ url_for('logout') }}" style="
+              display:block;
+              padding:12px;
+              text-decoration:none;
+              color:#333;
+            " onmouseover="this.style.background='#f5f5f5'" 
+               onmouseout="this.style.background='white'">
+              Logout
+            </a>
+          </div>
+
+          {% else %}
+          <div class="header-action" style="margin-left:20px;">
+            <a href="{{ url_for('auth') }}" class="btn btn-primary has-after">Login</a>
+          </div>
+
+          {% endif %}
+
+        </li>
+
+      </ul>
+
+    </nav>
+
+    <!-- RIGHT SIDE BUTTON -->
+    <div class="header-action" style="margin-left:20px;">
+      {% if not session.get('user_name') %}
+        <a href="order" class="btn btn-primary has-after">Order Now</a>
+      {% endif %}
     </div>
-  </header>
+
+    <!-- MOBILE -->
+    <button class="nav-open-btn" data-nav-toggler>
+      <ion-icon name="menu-outline"></ion-icon>
+    </button>
+
+    <div class="overlay" data-overlay data-nav-toggler></div>
+
+  </div>
+</header>
 
 
 
@@ -130,7 +209,7 @@
               Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor.
             </p>
 
-            <a href="#" class="btn btn-secondary has-after">Order Now</a>
+            <a href="order" class="btn btn-secondary has-after">Order Now</a>
           </div>
 
           <figure class="hero-banner" data-reveal>
@@ -269,11 +348,11 @@
               <div class="restaurant-card">
 
                 <div class="card-icon">
-                  <img src="{{ url_for('static', filename='images/rest-1.jpg') }}" width="100" height="100" loading="lazy"
+                  <img src="{{ url_for('static', filename='images/kfc.jpg') }}" width="100" height="100" loading="lazy"
                     alt="Kennington Lane Cafe" class="w-100">
                 </div>
 
-                <h3 class="h5 card-title">Kennington Lane Cafe</h3>
+                <h3 class="h5 card-title">KFC</h3>
 
                 <div class="rating-wrapper">
                   <ion-icon name="star" aria-hidden="true"></ion-icon>
@@ -299,11 +378,11 @@
               <div class="restaurant-card">
 
                 <div class="card-icon">
-                  <img src="{{ url_for('static', filename='images/rest-2.jpg') }}" width="100" height="100" loading="lazy" alt="The Wilmington"
+                  <img src="{{ url_for('static', filename='images/dominos.jpg') }}" width="100" height="100" loading="lazy" alt="The Wilmington"
                     class="w-100">
                 </div>
 
-                <h3 class="h5 card-title">The Wilmington</h3>
+                <h3 class="h5 card-title">Dominos</h3>
 
                 <div class="rating-wrapper">
                   <ion-icon name="star" aria-hidden="true"></ion-icon>
@@ -329,11 +408,11 @@
               <div class="restaurant-card">
 
                 <div class="card-icon">
-                  <img src="{{ url_for('static', filename='images/rest-3.jpg') }}" width="100" height="100" loading="lazy" alt="Kings Arms"
+                  <img src="{{ url_for('static', filename='images/mcdonald.jpg') }}" width="100" height="100" loading="lazy" alt="Kings Arms"
                     class="w-100">
                 </div>
 
-                <h3 class="h5 card-title">Kings Arms</h3>
+                <h3 class="h5 card-title">McDonald's</h3>
 
                 <div class="rating-wrapper">
                   <ion-icon name="star" aria-hidden="true"></ion-icon>
@@ -393,7 +472,7 @@
               Enjoy delicious meals from your favorite restaurants delivered right to your table with ease. We ensure quality, freshness, and fast service so you can satisfy your cravings anytime.
             </p>
 
-            <a href="#" class="btn btn-primary has-after">Order Now</a>
+            <a href="{{ url_for('restaurants') }}" class="btn btn-primary has-after">Order Now</a>
 
           </div>
 
@@ -418,7 +497,7 @@
             </li>
 
             <li class="stats-item">
-              <span class="span">976</span>
+              <span class="span">500+</span>
 
               <p class="stats-text">
                 Satisfied <br>
@@ -746,6 +825,25 @@
   -->
   <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
   <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+  <script>
+function toggleDropdown() {
+  var dropdown = document.getElementById("userDropdown");
+
+  if (dropdown.style.display === "block") {
+    dropdown.style.display = "none";
+  } else {
+    dropdown.style.display = "block";
+  }
+}
+
+/* click outside = close dropdown */
+window.onclick = function(e) {
+  if (!e.target.closest('.user-box')) {
+    var dropdown = document.getElementById("userDropdown");
+    if (dropdown) dropdown.style.display = "none";
+  }
+}
+</script>
 
 </body>
 

@@ -3,153 +3,382 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Restaurants - Fasteat</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-  <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.svg') }}" type="image/svg+xml">
-</head>
-<body>
+  <title>Restaurants - FastEat</title>
 
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.svg') }}">
+</head>
+
+<body class="loaded">
+
+<style>
+    .header{
+  position: fixed;   /* 🔥 main fix */
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 9999;
+
+  background: #fff; /* ya tumhara theme */
+  box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+}
+body{
+  padding-top: 90px; /* navbar height ke hisab se */
+}
+.header.scrolled{
+  box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+  background: rgba(255,255,255,0.95);
+  backdrop-filter: blur(10px);
+}
+  </style>
+
+<!-- HEADER -->
 <header class="header" data-header>
-  <div class="container">
-    <a href="{{ url_for('home') }}" class="logo">
-      <img src="{{ url_for('static', filename='images/logo.svg') }}" width="148" height="38" alt="Fasteat home">
+  <div class="container" style="display:flex; align-items:center; width:100%;">
+
+    <!-- LOGO -->
+    <a href="#" class="logo">
+      <img src="{{ url_for('static', filename='images/logo.svg') }}" width="148" height="38">
     </a>
-    <nav class="navbar" data-navbar>
-      <ul class="navbar-list">
-        <li class="navbar-item"><a href="{{ url_for('home') }}" class="navbar-link">Home</a></li>
-        <li class="navbar-item"><a href="{{ url_for('about') }}" class="navbar-link">About Us</a></li>
-        <li class="navbar-item"><a href="{{ url_for('restaurants') }}" class="navbar-link">Restaurants</a></li>
-        <li class="navbar-item"><a href="{{ url_for('contact') }}" class="navbar-link">Contact Us</a></li>
+
+    <!-- NAVBAR -->
+    <nav class="navbar" data-navbar style="flex:1;">
+
+      <button class="nav-close-btn" data-nav-toggler>
+        <ion-icon name="close-outline"></ion-icon>
+      </button>
+
+      <ul class="navbar-list" style="display:flex; align-items:center; gap:25px; width:100%;">
+
+        <li class="navbar-item">
+          <a href="{{url_for('home')}}" class="navbar-link">Home</a>
+        </li>
+
+        <li class="navbar-item">
+          <a href="about" class="navbar-link">About Us</a>
+        </li>
+
+        <li class="navbar-item">
+          <a href="{{ url_for('restaurants') }}" class="navbar-link">Restaurants</a>
+        </li>
+
+        <li class="navbar-item">
+          <a href="contact" class="navbar-link">Contacts</a>
+        </li>
+
+        <!-- BAG ICON -->
+        <li class="navbar-item" style="margin-left:10px;">
+          <a href="{{ url_for('cart') }}">
+            <button class="cart-btn" style="
+              background:#fff;
+              border:none;
+              width:40px;
+              height:40px;
+              border-radius:50%;
+              display:flex;
+              align-items:center;
+              justify-content:center;
+            ">
+              <ion-icon name="bag-outline" style="font-size:20px; color:var(--marigold);"></ion-icon>
+            </button>
+          </a>
+        </li>
+
+        <!-- PUSH SPACE -->
+        <li style="flex:1;"></li>
+
+        <!-- USER (RIGHT CORNER) -->
+        <li class="navbar-item" style="position:relative; display:flex; align-items:center;">
+
+          {% if session.get('user_name') %}
+
+          <div class="user-box" onclick="toggleDropdown()" style="display:flex; align-items:center; gap:10px; cursor:pointer;">
+
+            <!-- NAME -->
+            <span style="color:var(--marigold); font-weight:600;">
+              {{ session.get('user_name') }}
+            </span>
+
+            <!-- CIRCLE -->
+            <div style="
+              width:38px;
+              height:38px;
+              border-radius:50%;
+              background:var(--marigold);
+              color:#fff;
+              display:flex;
+              align-items:center;
+              justify-content:center;
+              font-weight:bold;
+            ">
+              {{ session.get('user_name')[0] }}
+            </div>
+
+          </div>
+
+          <!-- DROPDOWN -->
+          <div id="userDropdown" style="
+            display:none;
+            position:absolute;
+            right:0;
+            top:50px;
+            background:#fff;
+            border-radius:10px;
+            box-shadow:0 10px 25px rgba(0,0,0,0.15);
+            overflow:hidden;
+            min-width:140px;
+            z-index:999;
+          ">
+            <a href="{{ url_for('logout') }}" style="
+              display:block;
+              padding:12px;
+              text-decoration:none;
+              color:#333;
+            " onmouseover="this.style.background='#f5f5f5'" 
+               onmouseout="this.style.background='white'">
+              Logout
+            </a>
+          </div>
+
+          {% else %}
+          <div class="header-action" style="margin-left:20px;">
+            <a href="{{ url_for('auth') }}" class="btn btn-primary has-after">Login</a>
+          </div>
+
+          {% endif %}
+
+        </li>
+
       </ul>
+
     </nav>
+
+    <!-- RIGHT SIDE BUTTON -->
+    <div class="header-action" style="margin-left:20px;">
+      {% if not session.get('user_name') %}
+        <a href="order" class="btn btn-primary has-after">Order Now</a>
+      {% endif %}
+    </div>
+
+    <!-- MOBILE -->
+    <button class="nav-open-btn" data-nav-toggler>
+      <ion-icon name="menu-outline"></ion-icon>
+    </button>
+
+    <div class="overlay" data-overlay data-nav-toggler></div>
+
   </div>
 </header>
 
 
-  <section class="section top-restaurant" aria-labelledby="top-restaurent-label">
-        <div class="container">
+<!-- HERO -->
+<section class="section hero has-bg-image"
+style="background-image: url('{{ url_for('static', filename='images/hero-bg.png') }}')">
 
-          <ul class="grid-list">
+  <div class="container">
+    <div class="hero-content" style="text-align:center; width:100%;">
+      <h1 class="h1 hero-title">Restaurants</h1>
+      <p class="hero-text">Our Restaurants</p>
+    </div>
+  </div>
+</section>
 
-            <li data-reveal="left">
-              <h2 class="h2 section-title" id="top-restaurent-label">
-                12 Best Restaurants in Your City
-              </h2>
 
-              <p class="section-text">
-                Discover the 12 best restaurants in your city, offering a variety of cuisines and flavors. From cozy cafes to fine dining, each spot delivers delicious meals, excellent service, and a memorable experience for every food lover.
-              </p>
-            </li>
+<!-- RESTAURANTS -->
+<section class="section">
+  <div class="container">
 
-            <li data-reveal="right">
-              <div class="restaurant-card">
+    <div class="grid-list">
 
-                <div class="card-icon">
-                  <img src="{{ url_for('static', filename='images/rest-1.jpg') }}" width="100" height="100" loading="lazy"
-                    alt="Kennington Lane Cafe" class="w-100">
-                </div>
+      <!-- KFC -->
+      <div class="restaurant-card">
+        <div class="card-icon">
+          <img src="{{ url_for('static', filename='images/kfc.jpg') }}" class="w-100">
+        </div>
+        <h3 class="h5 card-title">KFC</h3>
+        <p class="card-text">Famous for crispy fried chicken and zinger burgers.</p>
+      </div>
 
-                <h3 class="h5 card-title">Kennington Lane Cafe</h3>
+      <!-- Dominos -->
+      <div class="restaurant-card">
+        <div class="card-icon">
+          <img src="{{ url_for('static', filename='images/dominos.jpg') }}" class="w-100">
+        </div>
+        <h3 class="h5 card-title">Dominos</h3>
+        <p class="card-text">Hot and fresh pizzas with amazing flavors.</p>
+      </div>
 
-                <div class="rating-wrapper">
-                  <ion-icon name="star" aria-hidden="true"></ion-icon>
-                  <ion-icon name="star" aria-hidden="true"></ion-icon>
-                  <ion-icon name="star" aria-hidden="true"></ion-icon>
-                  <ion-icon name="star" aria-hidden="true"></ion-icon>
-                  <ion-icon name="star-outline" aria-hidden="true"></ion-icon>
-                </div>
+      <!-- McDonalds -->
+      <div class="restaurant-card">
+        <div class="card-icon">
+          <img src="{{ url_for('static', filename='images/mcdonald.jpg') }}" class="w-100">
+        </div>
+        <h3 class="h5 card-title">McDonald's</h3>
+        <p class="card-text">World famous burgers, fries and fast food.</p>
+      </div>
 
-                <div class="card-meta-wrapper">
-                  <a href="#" class="card-meta">american</a>
-                  <a href="#" class="card-meta">steakhouse</a>
-                </div>
+      <!-- Kabab Jee -->
+      <div class="restaurant-card">
+        <div class="card-icon">
+          <img src="{{ url_for('static', filename='images/kababjees.jfif') }}" class="w-100">
+        </div>
+        <h3 class="h5 card-title">Kabab Jee</h3>
+        <p class="card-text">Best BBQ, karahi and desi Pakistani food.</p>
+      </div>
 
-                <p class="card-text">
-                 A cozy spot known for its fresh meals and warm atmosphere. Perfect for breakfast and lunch, offering quality ingredients and a relaxing dining experience for everyone.
-                </p>
+      <!-- Zaiqa -->
+      <div class="restaurant-card">
+        <div class="card-icon">
+          <img src="{{ url_for('static', filename='images/zaiqa.png') }}" class="w-100">
+        </div>
+        <h3 class="h5 card-title">Zaiqa</h3>
+        <p class="card-text">Delicious traditional dishes with rich taste.</p>
+      </div>
+    </div>
 
-              </div>
-            </li>
+  </div>
+</section>
 
-            <li data-reveal="left">
-              <div class="restaurant-card">
 
-                <div class="card-icon">
-                  <img src="{{ url_for('static', filename='images/rest-2.jpg') }}" width="100" height="100" loading="lazy" alt="The Wilmington"
-                    class="w-100">
-                </div>
+<!-- 
+    - #FOOTER
+  -->
 
-                <h3 class="h5 card-title">The Wilmington</h3>
+  <footer class="footer">
+    <div class="container">
 
-                <div class="rating-wrapper">
-                  <ion-icon name="star" aria-hidden="true"></ion-icon>
-                  <ion-icon name="star" aria-hidden="true"></ion-icon>
-                  <ion-icon name="star" aria-hidden="true"></ion-icon>
-                  <ion-icon name="star" aria-hidden="true"></ion-icon>
-                  <ion-icon name="star-outline" aria-hidden="true"></ion-icon>
-                </div>
+      <div class="section footer-top grid-list">
 
-                <div class="card-meta-wrapper">
-                  <a href="#" class="card-meta">american</a>
-                  <a href="#" class="card-meta">steakhouse</a>
-                </div>
+        <div class="footer-brand">
 
-                <p class="card-text">
-                  A stylish restaurant serving delicious dishes with a modern touch. Known for its friendly service and flavorful menu, making it a great place to enjoy meals with friends.
-                </p>
-
-              </div>
-            </li>
-
-            <li data-reveal="right">
-              <div class="restaurant-card">
-
-                <div class="card-icon">
-                  <img src="{{ url_for('static', filename='images/rest-3.jpg') }}" width="100" height="100" loading="lazy" alt="Kings Arms"
-                    class="w-100">
-                </div>
-
-                <h3 class="h5 card-title">Kings Arms</h3>
-
-                <div class="rating-wrapper">
-                  <ion-icon name="star" aria-hidden="true"></ion-icon>
-                  <ion-icon name="star" aria-hidden="true"></ion-icon>
-                  <ion-icon name="star" aria-hidden="true"></ion-icon>
-                  <ion-icon name="star" aria-hidden="true"></ion-icon>
-                  <ion-icon name="star-outline" aria-hidden="true"></ion-icon>
-                </div>
-
-                <div class="card-meta-wrapper">
-                  <a href="#" class="card-meta">american</a>
-                  <a href="#" class="card-meta">healthy</a>
-                </div>
-
-                <p class="card-text">
-                  A classic dining place offering tasty food in a comfortable setting. Popular for its rich flavors and welcoming environment, ideal for casual dining and quick bites anytime.
-                </p>
-
-              </div>
-            </li>
-
-          </ul>
-
-          <a href="#" class="btn btn-secondary has-after">
-            <span class="span">See All</span>
-
-            <ion-icon name="arrow-forward" aria-hidden="true"></ion-icon>
+          <a href="#" class="logo">
+            <img src="{{ url_for('static', filename='images/logo-footer.svg') }}" width="148" height="38" alt="fasteat home">
           </a>
 
+          <h2 class="h2 section-title">The Best Restaurants in Your Home</h2>
+
+          <p class="section-text">
+            Our food delivery platform brings your favorite meals straight to your doorstep with speed and reliability. Enjoy fresh, delicious food from top restaurants anytime, anywhere.
+          </p>
+
         </div>
-      </section>
 
-<footer class="footer">
-  <div class="container">
-    <p class="copyright">
-      &copy; 2022 Fasteat. All rights reserved.
-    </p>
-  </div>
-</footer>
+        <ul class="footer-list">
 
-<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+          <li>
+            <p class="footer-list-title h5">Menu</p>
+          </li>
+
+          <li>
+            <a href="#" class="footer-link">
+              <span class="span">Home</span>
+
+              <ion-icon name="arrow-forward" aria-hidden="true"></ion-icon>
+            </a>
+          </li>
+
+          <li>
+            <a href="#" class="footer-link">
+              <span class="span">About Us</span>
+
+              <ion-icon name="arrow-forward" aria-hidden="true"></ion-icon>
+            </a>
+          </li>
+
+          <li>
+            <a href="#" class="footer-link">
+              <span class="span">Restaurants</span>
+
+              <ion-icon name="arrow-forward" aria-hidden="true"></ion-icon>
+            </a>
+          </li>
+
+          <li>
+            <a href="#" class="footer-link">
+              <span class="span">Contacts</span>
+
+              <ion-icon name="arrow-forward" aria-hidden="true"></ion-icon>
+            </a>
+          </li>
+
+        </ul>
+
+        <ul class="footer-list">
+
+          <li>
+            <p class="footer-list-title h5">Contacts</p>
+          </li>
+
+          <li>
+            <address class="address">
+              <ion-icon name="location" aria-hidden="true"></ion-icon>
+
+              <span class="span">Block 2, North Nazimabad, Karachi, Sindh, Pakistan</span>
+            </address>
+          </li>
+
+          <li>
+            <a href="mailto:quickeat@mail.net" class="footer-link">
+              <ion-icon name="mail" aria-hidden="true"></ion-icon>
+
+              <span class="span">khanubaidah7@gmail.com</span>
+            </a>
+          </li>
+
+          <li>
+            <a href="tel:+12344567890" class="footer-link">
+              <ion-icon name="call" aria-hidden="true"></ion-icon>
+
+              <span class="span">+92 3178376433</span>
+            </a>
+          </li>
+
+          <li>
+            <ul class="social-list">
+
+              <li>
+                <a href="#" class="social-link">
+                  <ion-icon name="logo-facebook"></ion-icon>
+                </a>
+              </li>
+
+              <li>
+                <a href="#" class="social-link">
+                  <ion-icon name="logo-instagram"></ion-icon>
+                </a>
+              </li>
+
+              <li>
+                <a href="#" class="social-link">
+                  <ion-icon name="logo-twitter"></ion-icon>
+                </a>
+              </li>
+
+            </ul>
+          </li>
+
+        </ul>
+
+      </div>
+
+      <div class="footer-bottom">
+
+        <p class="copyright">
+          Copyright 2026 FastEat. All rights reserved.
+        </p>
+
+      </div>
+
+    </div>
+  </footer>
+
+<!-- ICONS -->
+<script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+<script>
+function toggleDropdown(){
+  let d=document.getElementById("userDropdown");
+  d.style.display = d.style.display==="block" ? "none":"block";
+}
+</script>
 </body>
 </html>

@@ -3,15 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <title>Contact Us - FastEat</title>
+  <title>Your Cart - FastEat</title>
 
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-  <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.svg') }}">
+
+  <!-- Icons -->
+  <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
 </head>
 
 <body class="loaded">
-  <style>
+
+<style>
     .header{
   position: fixed;   /* 🔥 main fix */
   top: 0;
@@ -170,113 +172,87 @@ body{
   </div>
 </header>
 
-
 <!-- HERO -->
 <section class="section hero has-bg-image"
-style="background-image: url('{{ url_for('static', filename='images/hero-bg.png') }}')">
+  style="background-image: url('{{ url_for('static', filename='images/hero-bg.png') }}')">
 
   <div class="container">
     <div class="hero-content" style="text-align:center; width:100%;">
-      <h1 class="h1 hero-title">📞 Contact Us</h1>
-      <p class="hero-text">
-        We’d love to hear from you — send us a message!
-      </p>
+      <h1 class="h1 hero-title">Order Your Favorite Food</h1>
+      <p class="hero-text">Choose delicious meals and place your order</p>
     </div>
   </div>
-
 </section>
 
-
-<!-- CONTACT SECTION -->
+<!-- FOOD ITEMS -->
 <section class="section">
   <div class="container">
 
     <div class="grid-list">
 
-      <!-- LEFT: INFO -->
-      <div>
+      <!-- ITEM CARD TEMPLATE (Repeat 15 times) -->
 
-        <h2 class="h2 section-title">Get In Touch</h2>
+      {% set foods = [
+        ('Burger',500,'burger.jfif'),
+        ('Pizza',800,'pizza.jfif'),
+        ('Fries',300,'fries.jfif'),
+        ('Sandwich',400,'sandwich.jpg'),
+        ('Biryani',350,'biryani.jpg'),
+        ('Shawarma',250,'shawarma.jpg'),
+        ('Pasta',600,'pasta.jpg'),
+        ('Noodles',450,'noodles.jpg'),
+        ('Karahi',1200,'karahi.jpg'),
+        ('BBQ',1500,'bbq.jpg'),
+        ('Roll',200,'roll.jpg'),
+        ('Zinger',550,'zinger.jpg'),
+        ('Steak',1800,'steak.jpg'),
+        ('Ice Cream',150,'icecream.jpg'),
+        ('Juice',120,'juice.jpg')
+      ] %}
 
-        <p class="section-text">
-          Have questions, feedback, or issues? Our team is here to help you anytime.
-        </p>
+      {% for food in foods %}
+      <div class="restaurant-card" style="padding:15px; border-radius:15px; box-shadow: var(--shadow-2); text-align:center;">
 
-        <p class="section-text">
-          📍 Karachi, Pakistan  
-          <br> 📧 khanubaidah7@gmail.com  
-          <br> 📞 +92 3178376433  
-        </p>
+        <img src="{{ url_for('static', filename='images/foods/' + food[2]) }}"
+             style="width:100%; height:250px; object-fit:cover; border-radius:10px;">
+
+        <h3 class="h5" style="margin-top:10px;">{{ food[0] }}</h3>
+
+        <p style="color:var(--marigold); font-weight:bold;">Rs {{ food[1] }}</p>
+
+        <!-- FORM -->
+        <form action="{{ url_for('place_order') }}" method="POST">
+
+          <input type="hidden" name="item" value="{{ food[0] }}">
+          <input type="hidden" name="price" value="{{ food[1] }}">
+
+          <select name="restaurant" style="margin-top:5px; color:var(--shadow-8)">
+            <option value="KFC">KFC</option>
+            <option value="McDonalds">McDonalds</option>
+            <option value="Dominos">Dominos</option>
+            <option value="Dominos">Kabab Jees</option>
+            <option value="Dominos">Zaiqa</option>
+          </select>
+
+          <input style="color:var(--marigold); margin-top:5px; width:60px; text-align:center;" type="number" name="quantity" value="1" min="1"
+                 >
+
+          <br><br>
+
+          <button type="submit" class="btn btn-primary has-after" style="width:100%;">
+            Order Now
+          </button>
+
+        </form>
 
       </div>
-
-
-      <!-- RIGHT: FORM -->
-     <div style="
-  background: white;
-  padding: 40px;
-  border-radius: 15px;
-  box-shadow: var(--shadow-2);
-">
-
-  <form action="#" class="contact-form" style="display:flex; flex-direction:column; gap:15px;">
-
-    <!-- Name -->
-    <div>
-      <label style="font-weight:500;">Your Name</label>
-      <input type="text" name="name" placeholder="Enter your name" required
-      style="padding:12px; border-radius:10px; border:1px solid #ddd; margin-top:5px;">
-    </div>
-
-    <!-- Email -->
-    <div>
-      <label style="font-weight:500;">Your Email</label>
-      <input type="email" name="email" placeholder="Enter your email" required
-      style="padding:12px; border-radius:10px; border:1px solid #ddd; margin-top:5px;">
-    </div>
-
-    <!-- Message -->
-    <div>
-      <label style="font-weight:500;">Your Message</label>
-      <textarea name="message" rows="5" placeholder="Write your message..." required
-      style="padding:12px; border-radius:10px; border:1px solid #ddd; margin-top:5px;"></textarea>
-    </div>
-
-    <!-- Button -->
-    <button type="submit" class="btn btn-primary has-after" style="justify-content:center;">
-      Send Message 
-    </button>
-
-  </form>
-
-</div>
+      {% endfor %}
 
     </div>
 
   </div>
 </section>
 
-
-<!-- CTA -->
-<section class="section cta">
-  <div class="container">
-
-    <div>
-      <h2 class="h2 section-title">Hungry? Lets order something delicious</h2>
-      <p class="section-text">
-        Explore restaurants and enjoy your favorite meals at home.
-      </p>
-    </div>
-
-    <a href="{{ url_for('order_page') }}" class="btn btn-primary has-after">
-      Order Now
-    </a>
-
-  </div>
-</section>
-
-
-<!-- FOOTER -->
 <footer class="footer">
     <div class="container">
 
@@ -303,7 +279,7 @@ style="background-image: url('{{ url_for('static', filename='images/hero-bg.png'
           </li>
 
           <li>
-            <a href="#" class="footer-link">
+            <a href="{{ url_for('home') }}" class="footer-link">
               <span class="span">Home</span>
 
               <ion-icon name="arrow-forward" aria-hidden="true"></ion-icon>
@@ -404,15 +380,14 @@ style="background-image: url('{{ url_for('static', filename='images/hero-bg.png'
 
     </div>
   </footer>
-
-
-<!-- ICONS -->
-<script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
 <script>
 function toggleDropdown(){
   let d=document.getElementById("userDropdown");
   d.style.display = d.style.display==="block" ? "none":"block";
 }
 </script>
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
+<script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
 </body>
 </html>

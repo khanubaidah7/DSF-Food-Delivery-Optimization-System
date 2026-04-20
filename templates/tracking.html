@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Order Tracking</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body class="loaded">
+
+<header class="header active">
+  <div class="container">
+    <a href="{{ url_for('home') }}" class="logo">
+      <img src="{{ url_for('static', filename='images/logo.svg') }}" width="148">
+    </a>
+  </div>
+</header>
+
+<section class="section">
+  <div class="container">
+
+    <h1 class="h2 section-title" style="text-align:center;">
+      🚚 Live Order Tracking
+    </h1>
+
+    <div style="margin-top:40px;">
+
+      <div id="status" style="
+        padding:30px;
+        background:white;
+        box-shadow: var(--shadow-2);
+        border-radius:15px;
+        text-align:center;
+        font-size:20px;
+        font-weight:bold;
+      ">
+        Order Placed ✅
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+<script>
+let steps = [
+  "Order Placed ✅",
+  "Preparing Food 👨‍🍳",
+  "Out for Delivery 🚚",
+  "Delivered 🎉"
+];
+
+let i = 0;
+
+setInterval(() => {
+  i++;
+  if(i < steps.length){
+    document.getElementById("status").innerText = steps[i];
+  }
+}, 3000);
+</script>
+
+</body>
+</html>

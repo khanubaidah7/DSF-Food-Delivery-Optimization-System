@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Login / Signup - FastEat</title>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+<style>
+.auth-container {
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+}
+
+.auth-box {
+  width:400px;
+  background:white;
+  padding:30px;
+  border-radius:15px;
+  box-shadow: var(--shadow-2);
+}
+
+.auth-box h2 {
+  text-align:center;
+  margin-bottom:20px;
+}
+
+.input-field {
+  margin-bottom:15px;
+  padding:12px;
+  border:1px solid #ddd;
+  border-radius:8px;
+}
+
+.toggle-btn {
+  text-align:center;
+  margin-top:10px;
+  cursor:pointer;
+  color: var(--marigold);
+}
+
+.google-btn {
+  background:#fff;
+  border:1px solid #ddd;
+  padding:10px;
+  text-align:center;
+  border-radius:8px;
+  margin-top:10px;
+}
+</style>
+</head>
+
+<body>
+  <div>
+    <a href="{{url_for('home')}}" class="logo">
+        <img src="{{ url_for('static', filename='images/logo.svg') }}" width="148" height="38" alt="Fasteat home">
+      </a>
+  </div>
+
+<div class="auth-container">
+
+  <div class="auth-box">
+
+    <!-- LOGIN -->
+    <form id="loginForm" action="{{ url_for('login') }}" method="POST">
+      <h2>Login</h2>
+
+      <input type="email" name="email" placeholder="Email" class="input-field" required>
+      <input type="password" name="password" placeholder="Password" class="input-field" required>
+
+      <button class="btn btn-primary has-after w-100">Login</button>
+
+      <div class="google-btn">Login with Google</div>
+
+      <p class="toggle-btn" onclick="showSignup()">Don't have an account? Signup</p>
+    </form>
+
+    <!-- SIGNUP -->
+    <form id="signupForm" action="{{ url_for('signup') }}" method="POST" style="display:none;">
+      <h2>Signup</h2>
+
+      <input type="text" name="name" placeholder="Full Name" class="input-field" required>
+      <input type="email" name="email" placeholder="Email" class="input-field" required>
+      <input type="password" name="password" placeholder="Password" class="input-field" required>
+
+      <button class="btn btn-primary w-100">Signup</button>
+
+      <div class="google-btn">Signup with Google</div>
+
+      <p class="toggle-btn" onclick="showLogin()">Already have an account? Login</p>
+    </form>
+
+  </div>
+
+</div>
+
+<script>
+function showSignup(){
+  document.getElementById("loginForm").style.display="none";
+  document.getElementById("signupForm").style.display="block";
+}
+
+function showLogin(){
+  document.getElementById("signupForm").style.display="none";
+  document.getElementById("loginForm").style.display="block";
+}
+</script>
+
+</body>
+</html>

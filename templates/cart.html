@@ -1,17 +1,138 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<title>Your Cart</title>
 
-  <title>Contact Us - FastEat</title>
+<link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.svg') }}">
 
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-  <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.svg') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+body{
+  margin:0;
+  font-family:'Poppins', sans-serif;
+  background: linear-gradient(135deg, #fff1eb, #ace0f9);
+
+  min-height:100vh;
+  overflow-y:auto;   /* ✅ scroll fix */
+  overflow-x:hidden;
+}
+
+/* MAIN CONTENT */
+.main-content{
+  padding-bottom:100px; /* footer ke liye space */
+}
+
+/* CART CONTAINER */
+.cart-container{
+  max-width:1100px;
+  margin:120px auto 120px; /* top + bottom spacing */
+  padding:25px;
+}
+
+/* TITLE */
+.cart-title{
+  text-align:center;
+  font-size:34px;
+  font-weight:700;
+  margin-bottom:25px;
+  color:#222;
+}
+
+/* TABLE WRAPPER (scroll yahan hoga) */
+.table-wrapper{
+  width:100%;
+  overflow-x:auto;
+}
+
+/* TABLE */
+.cart-table{
+  width:100%;
+  border-collapse:collapse;
+  background:rgba(255,255,255,0.9);
+  backdrop-filter: blur(10px);
+  border-radius:15px;
+  overflow:hidden;
+  box-shadow:0 15px 40px rgba(0,0,0,0.1);
+}
+
+/* HEAD */
+.cart-table th{
+  background:var(--marigold);
+  color:#fff;
+  padding:15px;
+  font-size:14px;
+  text-align:left;
+}
+
+/* BODY */
+.cart-table td{
+  padding:15px;
+  border-bottom:1px solid rgba(0,0,0,0.05);
+}
+
+/* ROW HOVER */
+.cart-table tr:hover{
+  background:#f9f9f9;
+}
+
+/* REMOVE BUTTON */
+.remove-btn{
+  background:#ff4d4d;
+  color:#fff;
+  padding:6px 12px;
+  border-radius:6px;
+  text-decoration:none;
+  font-size:12px;
+  transition:0.3s;
+  text-align: center;
+}
+
+.remove-btn:hover{
+  background:#e60000;
+}
+
+/* TOTAL BOX */
+.total-box{
+  margin-top:25px;
+  text-align:right;
+  font-size:22px;
+  font-weight:700;
+  color:#222;
+}
+
+/* EMPTY CART */
+.empty{
+  text-align:center;
+  padding:60px;
+  background:rgba(255,255,255,0.85);
+  border-radius:15px;
+  box-shadow:0 10px 25px rgba(0,0,0,0.1);
+}
+
+/* SMALL SCREEN FIX */
+@media(max-width:768px){
+  .cart-title{
+    font-size:26px;
+  }
+
+  .cart-table th,
+  .cart-table td{
+    font-size:12px;
+    padding:10px;
+  }
+}
+
+</style>
 </head>
 
-<body class="loaded">
-  <style>
+<body>
+
+<style>
     .header{
   position: fixed;   /* 🔥 main fix */
   top: 0;
@@ -171,113 +292,82 @@ body{
 </header>
 
 
-<!-- HERO -->
-<section class="section hero has-bg-image"
-style="background-image: url('{{ url_for('static', filename='images/hero-bg.png') }}')">
+<!-- MAIN CONTENT -->
+<div class="main-content">
 
-  <div class="container">
-    <div class="hero-content" style="text-align:center; width:100%;">
-      <h1 class="h1 hero-title">📞 Contact Us</h1>
-      <p class="hero-text">
-        We’d love to hear from you — send us a message!
-      </p>
-    </div>
-  </div>
+<div class="cart-container">
 
-</section>
+<h2 class="cart-title">Your Cart</h2>
 
+{% if orders %}
+<div class="table-wrapper">
+<table class="cart-table">
 
-<!-- CONTACT SECTION -->
-<section class="section">
-  <div class="container">
+<thead>
+<tr>
+<th>Order Id</th>
+<th>Food</th>
+<th>Restaurant</th>
+<th>Qty</th>
+<th>Price</th>
+<th>Time</th>
+<th>Action</th>
+</tr>
+</thead>
 
-    <div class="grid-list">
+<tbody>
 
-      <!-- LEFT: INFO -->
-      <div>
+{% set total = 0 %}
 
-        <h2 class="h2 section-title">Get In Touch</h2>
+{% for order in orders %}
+{% set total = total + (order.price * (order.quantity if order.quantity else 1)) %}
 
-        <p class="section-text">
-          Have questions, feedback, or issues? Our team is here to help you anytime.
-        </p>
+<tr>
+<td>{{ order.id }}</td>
+<td>{{ order.item_name }}</td>
+<td>{{ order.restaurant }}</td>
+<td>{{ order.quantity if order.quantity else 1 }}</td>
+<td>Rs {{ order.price }}</td>
+<td>{{ order.order_time if order.order_time else "N/A" }}</td>
+<td>
+<a href="{{ url_for('delete_order', order_id=order.id) }}" class="remove-btn">Remove</a>
+</td>
+</tr>
 
-        <p class="section-text">
-          📍 Karachi, Pakistan  
-          <br> 📧 khanubaidah7@gmail.com  
-          <br> 📞 +92 3178376433  
-        </p>
+{% endfor %}
 
-      </div>
+</tbody>
+</table>
+</div>
 
+<div style="margin-top:20px; display:flex; justify-content:space-between; align-items:center;">
 
-      <!-- RIGHT: FORM -->
-     <div style="
-  background: white;
-  padding: 40px;
-  border-radius: 15px;
-  box-shadow: var(--shadow-2);
-">
+  <!-- MORE ORDERS BUTTON -->
+  <a href="{{ url_for('order_page') }}" class="btn-more btn btn-primary has-after">
+    More Orders
+  </a>
 
-  <form action="#" class="contact-form" style="display:flex; flex-direction:column; gap:15px;">
-
-    <!-- Name -->
-    <div>
-      <label style="font-weight:500;">Your Name</label>
-      <input type="text" name="name" placeholder="Enter your name" required
-      style="padding:12px; border-radius:10px; border:1px solid #ddd; margin-top:5px;">
-    </div>
-
-    <!-- Email -->
-    <div>
-      <label style="font-weight:500;">Your Email</label>
-      <input type="email" name="email" placeholder="Enter your email" required
-      style="padding:12px; border-radius:10px; border:1px solid #ddd; margin-top:5px;">
-    </div>
-
-    <!-- Message -->
-    <div>
-      <label style="font-weight:500;">Your Message</label>
-      <textarea name="message" rows="5" placeholder="Write your message..." required
-      style="padding:12px; border-radius:10px; border:1px solid #ddd; margin-top:5px;"></textarea>
-    </div>
-
-    <!-- Button -->
-    <button type="submit" class="btn btn-primary has-after" style="justify-content:center;">
-      Send Message 
-    </button>
-
-  </form>
+  <!-- TOTAL -->
+  <div class="total-box">
+  Total: Rs {{ total_amount }}
+</div>
 
 </div>
 
-    </div>
+{% else %}
 
-  </div>
-</section>
+<div class="empty">
+<h2>Your cart is empty</h2>
+<a href="{{ url_for('order_page') }}" class="btn btn-primary has-after">Order Now</a>
+</div>
 
+{% endif %}
 
-<!-- CTA -->
-<section class="section cta">
-  <div class="container">
-
-    <div>
-      <h2 class="h2 section-title">Hungry? Lets order something delicious</h2>
-      <p class="section-text">
-        Explore restaurants and enjoy your favorite meals at home.
-      </p>
-    </div>
-
-    <a href="{{ url_for('order_page') }}" class="btn btn-primary has-after">
-      Order Now
-    </a>
-
-  </div>
-</section>
+</div>
+</div>
 
 
-<!-- FOOTER -->
-<footer class="footer">
+  <footer class="footer">
     <div class="container">
 
       <div class="section footer-top grid-list">
@@ -405,14 +495,16 @@ style="background-image: url('{{ url_for('static', filename='images/hero-bg.png'
     </div>
   </footer>
 
-
-<!-- ICONS -->
-<script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
 <script>
 function toggleDropdown(){
   let d=document.getElementById("userDropdown");
   d.style.display = d.style.display==="block" ? "none":"block";
 }
 </script>
+
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
+<script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+
 </body>
 </html>

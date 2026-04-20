@@ -3,52 +3,419 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>About Us - Fasteat</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-  <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.svg') }}" type="image/svg+xml">
-</head>
-<body>
 
+  <title>About Us - FastEat</title>
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.svg') }}">
+</head>
+
+<body class="loaded">
+
+<style>
+    .header{
+  position: fixed;   /* 🔥 main fix */
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 9999;
+
+  background: #fff; /* ya tumhara theme */
+  box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+}
+body{
+  padding-top: 90px; /* navbar height ke hisab se */
+}
+.header.scrolled{
+  box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+  background: rgba(255,255,255,0.95);
+  backdrop-filter: blur(10px);
+}
+  </style>
+
+<!-- HEADER -->
 <header class="header" data-header>
-  <div class="container">
-    <a href="{{ url_for('home') }}" class="logo">
-      <img src="{{ url_for('static', filename='images/logo.svg') }}" width="148" height="38" alt="Fasteat home">
+  <div class="container" style="display:flex; align-items:center; width:100%;">
+
+    <!-- LOGO -->
+    <a href="#" class="logo">
+      <img src="{{ url_for('static', filename='images/logo.svg') }}" width="148" height="38">
     </a>
-    <nav class="navbar" data-navbar>
-      <ul class="navbar-list">
-        <li class="navbar-item"><a href="{{ url_for('home') }}" class="navbar-link">Home</a></li>
-        <li class="navbar-item"><a href="{{ url_for('about') }}" class="navbar-link">About Us</a></li>
-        <li class="navbar-item"><a href="{{ url_for('restaurants') }}" class="navbar-link">Restaurants</a></li>
-        <li class="navbar-item"><a href="{{ url_for('contact') }}" class="navbar-link">Contact Us</a></li>
+
+    <!-- NAVBAR -->
+    <nav class="navbar" data-navbar style="flex:1;">
+
+      <button class="nav-close-btn" data-nav-toggler>
+        <ion-icon name="close-outline"></ion-icon>
+      </button>
+
+      <ul class="navbar-list" style="display:flex; align-items:center; gap:25px; width:100%;">
+
+        <li class="navbar-item">
+          <a href="{{url_for('home')}}" class="navbar-link">Home</a>
+        </li>
+
+        <li class="navbar-item">
+          <a href="about" class="navbar-link">About Us</a>
+        </li>
+
+        <li class="navbar-item">
+          <a href="{{ url_for('restaurants') }}" class="navbar-link">Restaurants</a>
+        </li>
+
+        <li class="navbar-item">
+          <a href="contact" class="navbar-link">Contacts</a>
+        </li>
+
+        <!-- BAG ICON -->
+        <li class="navbar-item" style="margin-left:10px;">
+          <a href="{{ url_for('cart') }}">
+            <button class="cart-btn" style="
+              background:#fff;
+              border:none;
+              width:40px;
+              height:40px;
+              border-radius:50%;
+              display:flex;
+              align-items:center;
+              justify-content:center;
+            ">
+              <ion-icon name="bag-outline" style="font-size:20px; color:var(--marigold);"></ion-icon>
+            </button>
+          </a>
+        </li>
+
+        <!-- PUSH SPACE -->
+        <li style="flex:1;"></li>
+
+        <!-- USER (RIGHT CORNER) -->
+        <li class="navbar-item" style="position:relative; display:flex; align-items:center;">
+
+          {% if session.get('user_name') %}
+
+          <div class="user-box" onclick="toggleDropdown()" style="display:flex; align-items:center; gap:10px; cursor:pointer;">
+
+            <!-- NAME -->
+            <span style="color:var(--marigold); font-weight:600;">
+              {{ session.get('user_name') }}
+            </span>
+
+            <!-- CIRCLE -->
+            <div style="
+              width:38px;
+              height:38px;
+              border-radius:50%;
+              background:var(--marigold);
+              color:#fff;
+              display:flex;
+              align-items:center;
+              justify-content:center;
+              font-weight:bold;
+            ">
+              {{ session.get('user_name')[0] }}
+            </div>
+
+          </div>
+
+          <!-- DROPDOWN -->
+          <div id="userDropdown" style="
+            display:none;
+            position:absolute;
+            right:0;
+            top:50px;
+            background:#fff;
+            border-radius:10px;
+            box-shadow:0 10px 25px rgba(0,0,0,0.15);
+            overflow:hidden;
+            min-width:140px;
+            z-index:999;
+          ">
+            <a href="{{ url_for('logout') }}" style="
+              display:block;
+              padding:12px;
+              text-decoration:none;
+              color:#333;
+            " onmouseover="this.style.background='#f5f5f5'" 
+               onmouseout="this.style.background='white'">
+              Logout
+            </a>
+          </div>
+
+          {% else %}
+          <div class="header-action" style="margin-left:20px;">
+            <a href="{{ url_for('auth') }}" class="btn btn-primary has-after">Login</a>
+          </div>
+
+          {% endif %}
+
+        </li>
+
       </ul>
+
     </nav>
+
+    <!-- RIGHT SIDE BUTTON -->
+    <div class="header-action" style="margin-left:20px;">
+      {% if not session.get('user_name') %}
+        <a href="order" class="btn btn-primary has-after">Order Now</a>
+      {% endif %}
+    </div>
+
+    <!-- MOBILE -->
+    <button class="nav-open-btn" data-nav-toggler>
+      <ion-icon name="menu-outline"></ion-icon>
+    </button>
+
+    <div class="overlay" data-overlay data-nav-toggler></div>
+
   </div>
 </header>
 
-<main>
-  <section class="section about" data-reveal>
-    <div class="container">
-      <h1 class="h1 section-title">About Us</h1>
-      <p class="section-text">
-        Welcome to Fasteat! We are committed to bringing the best restaurants directly to your home. 
-        Our mission is to make food delivery fast, easy, and delicious.
-      </p>
-      <p class="section-text">
-        We partner with local restaurants to offer a wide variety of cuisines. 
-        Your satisfaction is our priority, and we ensure timely delivery every time.
+
+<!-- HERO -->
+<section class="section hero has-bg-image"
+style="background-image: url('{{ url_for('static', filename='images/hero-bg.png') }}')">
+
+  <div class="container">
+    <div class="hero-content" style="text-align:center; width:100%;">
+      <h1 class="h1 hero-title">About FastEat</h1>
+      <p class="hero-text">
+        Delivering happiness, one meal at a time
       </p>
     </div>
-  </section>
-</main>
-
-<footer class="footer">
-  <div class="container">
-    <p class="copyright">
-      &copy; 2022 Fasteat. All rights reserved.
-    </p>
   </div>
-</footer>
 
-<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</section>
+
+
+<!-- ABOUT CONTENT -->
+<section class="section">
+  <div class="container">
+
+    <div class="grid-list">
+
+      <!-- LEFT TEXT -->
+      <div>
+        <h2 class="h2 section-title">Who We Are</h2>
+
+        <p class="section-text">
+          FastEat is a modern food delivery platform designed to connect you with the best restaurants in your city. 
+          We focus on speed, quality, and customer satisfaction.
+        </p>
+
+        <p class="section-text">
+          Whether you're craving fast food, traditional meals, or something new, we bring it straight to your doorstep.
+        </p>
+
+      </div>
+
+      <!-- RIGHT TEXT -->
+      <div>
+        <h2 class="h2 section-title">Our Mission</h2>
+
+        <p class="section-text">
+          Our mission is simple — make food ordering easy, fast, and enjoyable. 
+          We aim to provide a seamless experience from browsing to delivery.
+        </p>
+
+        <p class="section-text">
+          We work closely with restaurants to ensure high-quality meals and reliable service every time.
+        </p>
+
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+
+<!-- STATS SECTION -->
+<section class="section stats">
+  <div class="container grid-list">
+
+    <div class="stats-item">
+      <span class="span">50+</span>
+      <p>Restaurants</p>
+    </div>
+
+    <div class="stats-item">
+      <span class="span">1000+</span>
+      <p>Orders Delivered</p>
+    </div>
+
+    <div class="stats-item">
+      <span class="span">500+</span>
+      <p>Happy Customers</p>
+    </div>
+
+    <div class="stats-item">
+      <span class="span">24/7</span>
+      <p>Service</p>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- CTA -->
+<section class="section cta">
+  <div class="container">
+
+    <div>
+      <h2 class="h2 section-title">Ready to order your favorite food?</h2>
+      <p class="section-text">
+        Explore restaurants and enjoy delicious meals at your home.
+      </p>
+    </div>
+
+    <a href="{{ url_for('order_page') }}" class="btn btn-primary has-after">
+      Order Now
+    </a>
+
+  </div>
+</section>
+
+<!-- 
+    - #FOOTER
+  -->
+
+  <footer class="footer">
+    <div class="container">
+
+      <div class="section footer-top grid-list">
+
+        <div class="footer-brand">
+
+          <a href="#" class="logo">
+            <img src="{{ url_for('static', filename='images/logo-footer.svg') }}" width="148" height="38" alt="fasteat home">
+          </a>
+
+          <h2 class="h2 section-title">The Best Restaurants in Your Home</h2>
+
+          <p class="section-text">
+            Our food delivery platform brings your favorite meals straight to your doorstep with speed and reliability. Enjoy fresh, delicious food from top restaurants anytime, anywhere.
+          </p>
+
+        </div>
+
+        <ul class="footer-list">
+
+          <li>
+            <p class="footer-list-title h5">Menu</p>
+          </li>
+
+          <li>
+            <a href="#" class="footer-link">
+              <span class="span">Home</span>
+
+              <ion-icon name="arrow-forward" aria-hidden="true"></ion-icon>
+            </a>
+          </li>
+
+          <li>
+            <a href="#" class="footer-link">
+              <span class="span">About Us</span>
+
+              <ion-icon name="arrow-forward" aria-hidden="true"></ion-icon>
+            </a>
+          </li>
+
+          <li>
+            <a href="#" class="footer-link">
+              <span class="span">Restaurants</span>
+
+              <ion-icon name="arrow-forward" aria-hidden="true"></ion-icon>
+            </a>
+          </li>
+
+          <li>
+            <a href="#" class="footer-link">
+              <span class="span">Contacts</span>
+
+              <ion-icon name="arrow-forward" aria-hidden="true"></ion-icon>
+            </a>
+          </li>
+
+        </ul>
+
+        <ul class="footer-list">
+
+          <li>
+            <p class="footer-list-title h5">Contacts</p>
+          </li>
+
+          <li>
+            <address class="address">
+              <ion-icon name="location" aria-hidden="true"></ion-icon>
+
+              <span class="span">Block 2, North Nazimabad, Karachi, Sindh, Pakistan</span>
+            </address>
+          </li>
+
+          <li>
+            <a href="mailto:quickeat@mail.net" class="footer-link">
+              <ion-icon name="mail" aria-hidden="true"></ion-icon>
+
+              <span class="span">khanubaidah7@gmail.com</span>
+            </a>
+          </li>
+
+          <li>
+            <a href="tel:+12344567890" class="footer-link">
+              <ion-icon name="call" aria-hidden="true"></ion-icon>
+
+              <span class="span">+92 3178376433</span>
+            </a>
+          </li>
+
+          <li>
+            <ul class="social-list">
+
+              <li>
+                <a href="#" class="social-link">
+                  <ion-icon name="logo-facebook"></ion-icon>
+                </a>
+              </li>
+
+              <li>
+                <a href="#" class="social-link">
+                  <ion-icon name="logo-instagram"></ion-icon>
+                </a>
+              </li>
+
+              <li>
+                <a href="#" class="social-link">
+                  <ion-icon name="logo-twitter"></ion-icon>
+                </a>
+              </li>
+
+            </ul>
+          </li>
+
+        </ul>
+
+      </div>
+
+      <div class="footer-bottom">
+
+        <p class="copyright">
+          Copyright 2026 FastEat. All rights reserved.
+        </p>
+
+      </div>
+
+    </div>
+  </footer>
+
+
+<!-- ICONS -->
+<script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+<script>
+function toggleDropdown(){
+  let d=document.getElementById("userDropdown");
+  d.style.display = d.style.display==="block" ? "none":"block";
+}
+</script>
 </body>
 </html>
